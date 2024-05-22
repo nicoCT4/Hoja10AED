@@ -94,7 +94,7 @@ public class Main {
     private static void mostrarCentroDelGrafo() {
         String centro = centroGrafo.calcularCentro(distancias);
         System.out.println("La ciudad que queda en el centro del grafo es: " + centro);
-    }
+    }    
 
     private static void modificarGrafo(Scanner scanner) {
         System.out.println("Seleccione una opción:");
