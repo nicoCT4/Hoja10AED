@@ -8,12 +8,18 @@ public class CentroGrafo {
         int minMaxDistancia = Integer.MAX_VALUE;
 
         for (String u : dist.keySet()) {
-            int maxDistancia = dist.get(u).values().stream()
-                    .filter(distance -> distance != null) // Filtrar valores null
-                    .max(Integer::compareTo)
-                    .orElse(Integer.MAX_VALUE);
-
-            if (maxDistancia < minMaxDistancia) {
+            int maxDistancia = Integer.MIN_VALUE;
+            boolean alcanzable = true;
+            for (Integer distancia : dist.get(u).values()) {
+                if (distancia == null) {
+                    alcanzable = false;
+                    break;
+                }
+                if (distancia > maxDistancia) {
+                    maxDistancia = distancia;
+                }
+            }
+            if (alcanzable && maxDistancia < minMaxDistancia) {
                 minMaxDistancia = maxDistancia;
                 centro = u;
             }
@@ -21,3 +27,4 @@ public class CentroGrafo {
         return centro;
     }
 }
+
