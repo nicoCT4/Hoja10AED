@@ -1,21 +1,40 @@
 package uvg.edu.gt;
 
+import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class GrafoTest {
+    private Grafo grafo;
+
+    @Before
+    public void setUp() {
+        grafo = new Grafo();
+    }
+
     @Test
     public void testAgregarArco() {
-        Grafo grafo = new Grafo(3);
-        grafo.agregarArco(0, 1, 5);
-        assertEquals(5, grafo.getAdyacencia()[0][1]);
+        grafo.agregarArco("Mixco", "Antigua", 30);
+        grafo.agregarArco("Antigua", "Escuintla", 25);
+
+        assertTrue(grafo.getAdyacencias().containsKey("Mixco"));
+        assertTrue(grafo.getAdyacencias().get("Mixco").containsKey("Antigua"));
+        assertEquals((Integer) 30, grafo.getAdyacencias().get("Mixco").get("Antigua"));
+
+        assertTrue(grafo.getAdyacencias().containsKey("Antigua"));
+        assertTrue(grafo.getAdyacencias().get("Antigua").containsKey("Escuintla"));
+        assertEquals((Integer) 25, grafo.getAdyacencias().get("Antigua").get("Escuintla"));
     }
 
     @Test
     public void testEliminarArco() {
-        Grafo grafo = new Grafo(3);
-        grafo.agregarArco(0, 1, 5);
-        grafo.eliminarArco(0, 1);
-        assertEquals(Integer.MAX_VALUE / 2, grafo.getAdyacencia()[0][1]);
+        grafo.agregarArco("Mixco", "Antigua", 30);
+        grafo.agregarArco("Antigua", "Escuintla", 25);
+
+        grafo.getAdyacencias().get("Mixco").remove("Antigua");
+
+        assertFalse(grafo.getAdyacencias().get("Mixco").containsKey("Antigua"));
     }
 }
+

@@ -1,74 +1,39 @@
 package uvg.edu.gt;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class FloydWarshall {
-    private int[][] dist;
-    private int[][] next;
+    public Map<String, Map<String, Integer>> calcularDistancias(Grafo grafo) {
+        Map<String, Map<String, Integer>> dist = new HashMap<>();
+        Map<String, Map<String, Integer>> adyacencias = grafo.getAdyacencias();
 
-    public FloydWarshall(Grafo grafo) {
-        int n = grafo.getNumVertices();
-        dist = new int[n][n];
-        next = new int[n][n];
-
-        // Inicializar distancias y siguiente
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                dist[i][j] = grafo.getAdyacencia()[i][j];
-                if (dist[i][j] != Integer.MAX_VALUE / 2 && i != j) {
-                    next[i][j] = j;
+        for (String u : adyacencias.keySet()) {
+            dist.put(u, new HashMap<>());
+            for (String v : adyacencias.keySet()) {
+                if (u.equals(v)) {
+                    dist.get(u).put(v, 0);
+                } else if (adyacencias.get(u).containsKey(v)) {
+                    dist.get(u).put(v, adyacencias.get(u).get(v));
+                } else {
+                    dist.get(u).put(v, null); // Usa null para representar la ausencia de ruta
                 }
             }
         }
 
-        // Aplicar Floyd-Warshall
-        for (int k = 0; k < n; k++) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
-                        dist[i][j] = dist[i][k] + dist[k][j];
-                        next[i][j] = next[i][k];
+        for (String k : adyacencias.keySet()) {
+            for (String i : adyacencias.keySet()) {
+                for (String j : adyacencias.keySet()) {
+                    if (dist.get(i).get(k) != null && dist.get(k).get(j) != null) {
+                        int nuevaDistancia = dist.get(i).get(k) + dist.get(k).get(j);
+                        if (dist.get(i).get(j) == null || nuevaDistancia < dist.get(i).get(j)) {
+                            dist.get(i).put(j, nuevaDistancia);
+                        }
                     }
                 }
             }
         }
-    }
-
-    public int[][] getDist() {
         return dist;
-    }
-
-    public List<Integer> getPath(int i, int j) {
-        if (dist[i][j] == Integer.MAX_VALUE / 2) return null; // No hay camino
-        List<Integer> path = new ArrayList<>();
-        int at = i;
-        while (at != j) {
-            path.add(at);
-            at = next[at][j];
-        }
-        path.add(j);
-        return path;
-    }
-
-    public int getCenter() {
-        int n = dist.length;
-        int[] eccentricity = new int[n];
-        Arrays.fill(eccentricity, 0);
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i != j) {
-                    eccentricity[i] = Math.max(eccentricity[i], dist[i][j]);
-                }
-            }
-        }
-
-        int center = 0;
-        for (int i = 1; i < n; i++) {
-            if (eccentricity[i] < eccentricity[center]) {
-                center = i;
-            }
-        }
-
-        return center;
     }
 }
 

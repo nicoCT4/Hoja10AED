@@ -1,33 +1,22 @@
 package uvg.edu.gt;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Grafo {
-    private int numVertices;
-    private int[][] adyacencia;
+    private Map<String, Map<String, Integer>> adyacencias;
 
-    public Grafo(int numVertices) {
-        this.numVertices = numVertices;
-        adyacencia = new int[numVertices][numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            Arrays.fill(adyacencia[i], Integer.MAX_VALUE / 2); // Usar infinito como representación de no conexión
-            adyacencia[i][i] = 0; // Distancia a sí mismo es 0
-        }
+    public Grafo() {
+        adyacencias = new HashMap<>();
     }
 
-    public void agregarArco(int origen, int destino, int peso) {
-        adyacencia[origen][destino] = peso;
+    public void agregarArco(String ciudad1, String ciudad2, int distancia) {
+        adyacencias.putIfAbsent(ciudad1, new HashMap<>());
+        adyacencias.get(ciudad1).put(ciudad2, distancia);
     }
 
-    public void eliminarArco(int origen, int destino) {
-        adyacencia[origen][destino] = Integer.MAX_VALUE / 2; // Volver a no conexión
-    }
-
-    public int[][] getAdyacencia() {
-        return adyacencia;
-    }
-
-    public int getNumVertices() {
-        return numVertices;
+    public Map<String, Map<String, Integer>> getAdyacencias() {
+        return adyacencias;
     }
 }
+
